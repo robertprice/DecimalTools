@@ -1,0 +1,13 @@
+*.bak
+*.lock
+src/DecimalTools-main/.classpath
+src/DecimalTools-main/.project
+src/DecimalTools-main/deployment/
+src/DecimalTools-main/.mendix-cache/
+src/DecimalTools-main/.svn/
+src/DecimalTools-main/javasource/administration/
+src/DecimalTools-main/javasource/decimaltools/proxies/
+src/DecimalTools-main/javasource/system/
+src/DecimalTools-main/javasource/decimaltools_unittests/proxies/
+GPUCache
+.DS_Store
