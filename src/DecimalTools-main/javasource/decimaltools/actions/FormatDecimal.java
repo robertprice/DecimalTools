@@ -11,23 +11,21 @@ package decimaltools.actions;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.math.BigDecimal;
 import com.mendix.systemwideinterfaces.MendixRuntimeException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.webui.CustomJavaAction;
 
 /**
- * Parse a decimal String with a specified format, decimal separator, and grouping separator into a Decimal.
+ * Format a decimal String with a specified format, decimal separator, and grouping separator into a String.
  */
-public class ParseDecimal extends CustomJavaAction<java.math.BigDecimal>
+public class FormatDecimal extends CustomJavaAction<java.lang.String>
 {
-	private java.lang.String Decimal;
+	private java.math.BigDecimal Decimal;
 	private java.lang.String Format;
 	private java.lang.String DecimalSeparator;
 	private java.lang.String GroupingSeparator;
 
-	public ParseDecimal(IContext context, java.lang.String Decimal, java.lang.String Format, java.lang.String DecimalSeparator, java.lang.String GroupingSeparator)
+	public FormatDecimal(IContext context, java.math.BigDecimal Decimal, java.lang.String Format, java.lang.String DecimalSeparator, java.lang.String GroupingSeparator)
 	{
 		super(context);
 		this.Decimal = Decimal;
@@ -37,10 +35,10 @@ public class ParseDecimal extends CustomJavaAction<java.math.BigDecimal>
 	}
 
 	@java.lang.Override
-	public java.math.BigDecimal executeAction() throws Exception
+	public java.lang.String executeAction() throws Exception
 	{
 		// BEGIN USER CODE
-		return parseDecimal(this.Decimal, this.Format, this.DecimalSeparator, this.GroupingSeparator);
+		return formatDecimal(this.Decimal, this.Format, this.DecimalSeparator, this.GroupingSeparator);
 		// END USER CODE
 	}
 
@@ -50,15 +48,15 @@ public class ParseDecimal extends CustomJavaAction<java.math.BigDecimal>
 	@java.lang.Override
 	public java.lang.String toString()
 	{
-		return "ParseDecimal";
+		return "FormatDecimal";
 	}
 
 	// BEGIN EXTRA CODE
-	public java.math.BigDecimal parseDecimal(String decimal, String format, String decimalSeparator, String groupingSeparator)
+	public String formatDecimal(java.math.BigDecimal decimal, String format, String decimalSeparator, String groupingSeparator)
 	{
 		// first do some sanity checks to make sure we have sensible data
-		if (decimal == null || decimal.isBlank()) {
-			throw new MendixRuntimeException("Decimal must not be blank");
+		if (decimal == null) {
+			throw new MendixRuntimeException("Decimal must not be empty");
 		}
 		if (format == null || format.isBlank()) {
 			throw new MendixRuntimeException("Format must not be blank");
@@ -81,13 +79,13 @@ public class ParseDecimal extends CustomJavaAction<java.math.BigDecimal>
 		dfs.setDecimalSeparator(decimalSeparator.charAt(0));
 		DecimalFormat df = new DecimalFormat(format, dfs);
 		df.setParseBigDecimal(true);
-		BigDecimal parsedStringValue = null;
+		String decimalString = null;
 		try {
-			parsedStringValue = (BigDecimal) df.parse(decimal);
-		} catch (ParseException pe) {
-			throw new MendixRuntimeException("Unable to parse decimal: " + pe.getMessage());
+			decimalString = df.format(decimal);
+		} catch (IllegalArgumentException iae) {
+			throw new MendixRuntimeException("Unable to format decimal: " + iae.getMessage());
 		}
-		return parsedStringValue;
+		return decimalString;
 	}
 	// END EXTRA CODE
 }
